@@ -1,0 +1,14 @@
+AN-24-244/
+backup/
+KingMaker/
+samples/
+limits/
+limitscan/*/
+limitscan/docker_stderror
+limitscan/out.txt
+Scripts/*~
+Scripts/*#
+Scripts/__pycache__/
+.env
+.nfs0000000000114ee600007b4f
+.Trash-12017/

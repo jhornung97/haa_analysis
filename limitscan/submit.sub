@@ -1,0 +1,20 @@
+Universe = docker
+docker_image = mschnepf/slc7-condocker
+
+executable = end_workflow.sh
+arguments = $(iso_cut_val)
+TransferExecutable = True
+transfer_input_files = utils.tar.gz
+#transfer_output_files = ""
+stream_output=True
+
+requirements = (TARGET.ProvidesCPU == True) && (TARGET.ProvidesETPResources == True)
+request_disk = 50000000
+request_memory = 4GB
+accounting_group = cms.higgs
+
+log = log/iso_cut_$(iso_cut_val).log
+output = stdout/iso_cut_$(iso_cut_val).out
+error = err/iso_cut_$(iso_cut_val).err
+
+queue iso_cut_val from iso_cut_vals.txt
