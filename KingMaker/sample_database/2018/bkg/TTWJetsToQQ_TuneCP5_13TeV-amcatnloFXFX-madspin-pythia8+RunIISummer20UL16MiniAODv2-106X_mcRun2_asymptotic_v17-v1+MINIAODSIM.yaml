@@ -1,0 +1,23 @@
+dbs: TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM
+era: 2018
+filelist:
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/0766EB58-44B1-F449-824F-C0EF63222896.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/0B129C39-34B5-3244-83BC-0CE77212BDAF.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/0E73A408-1130-3149-9624-4D23606C8C52.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/32F20C62-14A0-754F-ABDE-39D3FBCEA1A6.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/43D1C3B5-0AFE-CE45-BA8F-A8A0E2EE1B02.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/6B667CFC-D719-1942-825C-1414CA6BC7F8.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/8FF5715C-45CB-5C4B-9F63-B7E4E414A2FE.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/9B9147ED-893A-8B4B-9188-5D3268B2AAD9.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/9BDFEF0A-A908-9848-91C7-EDACE75633F2.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/A643A016-5926-D447-A3E7-0636F5816108.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/B7703353-7812-2641-9ED3-919644D9B61A.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/CEF497B7-ED9B-4041-8B46-29C0BD04E579.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/D27E2B1A-18D7-564B-9CEC-4AE1F8F1584A.root
+- root://cmsdcache-kit-disk.gridka.de:1094//store/user/jhornung/bkg_raw/TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM/F5F90ADC-1962-D54E-A96C-B1322FFCE443.root
+generator_weight: 1.0
+nevents: 197600000
+nfiles: 14
+nick: TTWJetsToQQ_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8+RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1+MINIAODSIM
+sample_type: bkg
+xsec: 1.0
