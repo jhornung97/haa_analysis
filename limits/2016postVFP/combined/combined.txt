@@ -1,0 +1,40 @@
+Combination of haa_2016postVFP_mm=../mm/mm.txt haa_2016postVFP_ee=../2016postVFP/ee/ee.txt
+imax 2 number of bins
+jmax 1 number of processes
+kmax * number of nuisance parameters
+----------------------------------------------------------------------
+shapes  Haa                H_mass_2016postVFP_mm   ../mm/workspace_sig_mm.root workspace_sig_nom:model_Haa_H_mass_2016postVFP_mm
+shapes  bkg_mass_2016postVFP      H_mass_2016postVFP_mm   ../mm/workspace_bkg_mm.root decorrelated_workspace_bkg_mm:model_bkg_mass_H_mass_2016postVFP_mm
+shapes  data_obs           H_mass_2016postVFP_mm   ../mm/workspace_bkg_mm.root decorrelated_workspace_bkg_mm:data_H_mass_2016postVFP_mm
+shapes  Haa                H_mass_2016postVFP_ee   ../ee/workspace_sig_ee.root workspace_sig_nom:model_Haa_H_mass_2016postVFP_ee
+shapes  bkg_mass_2016postVFP      H_mass_2016postVFP_ee   ../ee/workspace_bkg_ee.root decorrelated_workspace_bkg_ee:model_bkg_mass_H_mass_2016postVFP_ee
+shapes  data_obs           H_mass_2016postVFP_ee   ../ee/workspace_bkg_ee.root workspace_bkg_ee:data_H_mass_2016postVFP_ee
+---------------------------------------------------------------------
+bin             H_mass_2016postVFP_mm      H_mass_2016postVFP_ee
+observation     -1                  -1
+----------------------------------------------------------------------
+bin                 H_mass_2016postVFP_mm           H_mass_2016postVFP_mm     H_mass_2016postVFP_ee      H_mass_2016postVFP_ee
+process             Haa                      bkg_mass_2016postVFP      Haa                 bkg_mass_2016postVFP
+process             0                        1                  0                   1
+rate                1                  	     1                  1             	    1
+----------------------------------------------------------------------
+lumi_13TeV      lnN 1.012                    -                  1.012               -
+H_Reco          lnN 1.12                     -                  1.12                -
+pu              lnN 1.005                    -                  1.007               -
+id_1            lnN 1.0007                   -                  1.03                -
+id_2            lnN 1.0005                   -                  1.03                -
+iso_1           lnN 1.0005                   -                  -                   -
+iso_2           lnN 1.002                    -                  -                   -
+trigger_1       lnN 1.001                    -                  1.004               -
+trigger_2       lnN 1.0006                   -                  1.004               -
+---------------
+ee_mean_nuisance param 0.0 1.0
+ee_sigma_g_nuisance param 0.0 1.0
+ee_sigma_cb_nuisance param 0.0 1.0
+ee_alpha_nuisance param 0.0 1.0
+ee_n_nuisance param 0.0 1.0
+mm_mean_nuisance param 0.0 1.0
+mm_sigma_g_nuisance param 0.0 1.0
+mm_sigma_cb_nuisance param 0.0 1.0
+mm_alpha_nuisance param 0.0 1.0
+mm_n_nuisance param 0.0 1.0

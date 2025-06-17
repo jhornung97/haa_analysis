@@ -1,0 +1,32 @@
+---------------
+imax 1
+jmax 1
+kmax *
+---------------
+shapes  Haa         H_mass_2016preVFP_mm  workspace_sig_mm.root   workspace_sig_nom:model_Haa_H_mass_2016preVFP_mm
+shapes  data_obs    H_mass_2016preVFP_mm  workspace_bkg_mm.root   decorrelated_workspace_bkg_mm:data_H_mass_2016preVFP_mm
+shapes  bkg_mass    H_mass_2016preVFP_mm  workspace_bkg_mm.root   decorrelated_workspace_bkg_mm:model_bkg_mass_H_mass_2016preVFP_mm
+---------------
+bin H_mass_2016preVFP_mm 
+observation -1
+---------------
+bin         H_mass_2016preVFP_mm      H_mass_2016preVFP_mm
+process     Haa                 bkg_mass
+process     0                   1
+rate        1       			1
+---------------
+lumi_13TeV lnN 1.012 -
+H_Reco lnN 1.12 -
+pu lnN 1.005 -
+id_1 lnN 1.0007 -
+id_2 lnN 1.0005 -
+iso_1 lnN 1.0005 -
+iso_2 lnN 1.002 -
+trigger_1 lnN 1.001 -
+trigger_2 lnN 1.0006 -
+---------------
+mm_mean_nuisance param 0.0 1.0
+mm_sigma_g_nuisance param 0.0 1.0
+mm_sigma_cb_nuisance param 0.0 1.0
+mm_alpha_nuisance param 0.0 1.0
+mm_n_nuisance param 0.0 1.0
