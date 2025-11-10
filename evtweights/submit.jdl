@@ -1,0 +1,22 @@
+Universe = docker
+docker_image = mschnepf/slc7-condocker
+
+executable = wrapper.sh
+arguments = 2018 $(dataset)
+TransferExecutable = True
+transfer_input_files = utils.tar.gz
+#transfer_output_files = ""
+stream_output=True
++JobName = "$(dataset)_normalization"
+
+requirements = (TARGET.ProvidesCPU == True) && (TARGET.ProvidesETPResources == True)
+request_disk = 5000000+(1000000*NumJobStarts)
+periodic_release = (HoldReasonCode == 34)
+request_memory = 4GB
+accounting_group = cms.higgs
+
+log = log/$(dataset).log
+output = stdout/$(dataset).out
+error = err/$(dataset).err
+
+queue dataset from datasets.txt
