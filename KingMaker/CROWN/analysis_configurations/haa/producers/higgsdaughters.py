@@ -388,7 +388,7 @@ GetTrueDaughterP4s = Producer(
 			    nanoAOD.GenParticle_phi, 
 			    nanoAOD.GenParticle_mass,
                          ],
-	output = [q.truth_d1_p4, q.truth_d2_p4, q.truth_d3_p4, q.truth_d4_p4, q.truth_H_p4],
+	output = [q.truth_daughters, q.truth_d1_p4, q.truth_d2_p4, q.truth_d3_p4, q.truth_d4_p4, q.truth_H_p4],
 	scopes = ["mm", "ee", "em"],
 )
 
@@ -418,13 +418,21 @@ truth_d1_phi = Producer(
     scopes=["mm", "ee", "em"],
 )
 
+truth_d1_mass = Producer(
+    name="truth_d1_mass",
+    call="quantities::mass({df}, {output}, {input})",
+    input=[q.truth_d1_p4],
+    output=[q.truth_d1_mass],
+    scopes=["mm", "ee", "em"],
+)
+
 truth_d1Quantities = ProducerGroup(
 	name = "truth_d1Quantities",
 	call = None,
 	input = None,
 	output = None,
 	scopes = ["mm", "ee", "em"],
-	subproducers = [truth_d1_pt, truth_d1_eta, truth_d1_phi],
+	subproducers = [truth_d1_pt, truth_d1_eta, truth_d1_phi, truth_d1_mass],
 )
 
 # Get kinematics of 2nd hardest hadron

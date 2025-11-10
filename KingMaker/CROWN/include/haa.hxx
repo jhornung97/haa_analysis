@@ -50,11 +50,15 @@ ROOT::RDF::RNode GetTrueDaughterP4s(ROOT::RDF::RNode df,
 				    const std::string &str_genpart_eta, 
 				    const std::string &str_genpart_phi,
 				    const std::string &str_genpart_mass, 
+				    const std::string &str_truedaughteridxs,
 				    const std::string &str_truth_d1_p4,
 				    const std::string &str_truth_d2_p4,
 				    const std::string &str_truth_d3_p4, 
 				    const std::string &str_truth_d4_p4,
 				    const std::string &str_truth_h_p4); 
+
+ROOT::RDF::RNode GetTruthDaughterPairs(ROOT::RDF::RNode df, const std::string &str_truth_daughters, const std::string &str_genpart_pdgid, const std::string &str_genpart_motheridx, 
+               const std::string &str_truth_ps1, const std::string &str_truth_ps2);
 
 ROOT::RDF::RNode GetPseudoScalars(ROOT::RDF::RNode df, 
 					const std::string &daughterIdx, 
@@ -91,6 +95,8 @@ ROOT::RDF::RNode pfCandIso(ROOT::RDF::RNode df,
 					const std::string &str_pfcand_fromPV_mask); 
 
 ROOT::RDF::RNode getGenPt(ROOT::RDF::RNode df, const std::string &str_genpart_mask, const std::string &str_genpart_pt, const std::string &str_gen_pt);
+
+ROOT::RDF::RNode getDaughterDeltaR(ROOT::RDF::RNode df, const std::vector<std::string> &inputvectors, const std::string &str_daughterDeltaR);
 
 }
 

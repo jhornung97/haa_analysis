@@ -135,6 +135,14 @@ ps_1_mass = Producer(
     scopes=["mm", "ee", "em"],
 )
 
+ps_1_deltaR = Producer(
+    name="ps_1_deltaR",
+    call="haa::getDaughterDeltaR({df}, {input_vec}, {output})",
+    input=[q.ps_1_d_1_p4, q.ps_1_d_2_p4],
+    output=[q.ps_1_deltaR],
+    scopes=["mm", "ee", "em"],
+)
+
 ps_2_mass = Producer(
     name="ps_2_mass",
     call="quantities::m_vis({df}, {output}, {input_vec})",
@@ -143,15 +151,137 @@ ps_2_mass = Producer(
     scopes=["mm", "ee", "em"],
 )
 
-ps_masses = ProducerGroup(
-    name="ps_masses",
+ps_2_deltaR = Producer(
+    name="ps_2_deltaR",
+    call="haa::getDaughterDeltaR({df}, {input_vec}, {output})",
+    input=[q.ps_2_d_1_p4, q.ps_2_d_2_p4],
+    output=[q.ps_2_deltaR],
+    scopes=["mm", "ee", "em"],
+)
+
+ps_quantities = ProducerGroup(
+    name="ps_quantities",
     call=None,
     input=None,
     output=None,
     scopes=["mm", "ee", "em"],
-    subproducers=[ps_1_mass, ps_2_mass],
+    subproducers=[ps_1_mass, ps_2_mass, ps_1_deltaR, ps_2_deltaR]
 )
 
+GetTruthPS = Producer(
+    name="GetTruthPS",
+    call="haa::GetTruthDaughterPairs({df}, {input}, {output})",
+    input=[
+        q.truth_daughters,
+        nanoAOD.GenParticle_pdgId,
+        nanoAOD.GenParticle_motherid,
+    ],
+    output=[q.truth_ps_1, q.truth_ps_2],
+    scopes=["mm", "ee", "em"],
+)
+
+Truth_PS_1_D_1_P4 = Producer(
+    name="Truth_PS_1_D_1_P4",
+    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    input=[
+        q.truth_ps_1,
+        nanoAOD.GenParticle_pt,
+        nanoAOD.GenParticle_eta,
+        nanoAOD.GenParticle_phi,
+        nanoAOD.GenParticle_mass,
+    ],
+    output=[q.truth_ps_1_d_1_p4],
+    scopes=["mm", "ee", "em"],
+)
+
+Truth_PS_1_D_2_P4 = Producer(
+    name="Truth_PS_1_D_2_P4",
+    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    input=[
+        q.truth_ps_1,
+        nanoAOD.GenParticle_pt,
+        nanoAOD.GenParticle_eta,
+        nanoAOD.GenParticle_phi,
+        nanoAOD.GenParticle_mass,
+    ],
+    output=[q.truth_ps_1_d_2_p4],
+    scopes=["mm", "ee", "em"],
+)
+
+truth_ps_1_mass = Producer(
+    name="truth_ps_1_mass",
+    call="quantities::m_vis({df}, {output}, {input_vec})",
+    input=[q.truth_ps_1_d_1_p4, q.truth_ps_1_d_2_p4],
+    output=[q.truth_ps_1_mass],
+    scopes=["mm", "ee", "em"],
+)
+
+truth_ps_1_deltaR = Producer(
+    name="truth_ps_1_deltaR",
+    call="haa::getDaughterDeltaR({df}, {input_vec}, {output})",
+    input=[q.truth_ps_1_d_1_p4, q.truth_ps_1_d_2_p4],
+    output=[q.truth_ps_1_deltaR],
+    scopes=["mm", "ee", "em"],
+)
+
+Truth_PS_2_D_1_P4 = Producer(
+    name="Truth_PS_2_D_1_P4",
+    call="lorentzvectors::build({df}, {input_vec}, 0, {output})",
+    input=[
+        q.truth_ps_2,
+        nanoAOD.GenParticle_pt,
+        nanoAOD.GenParticle_eta,
+        nanoAOD.GenParticle_phi,
+        nanoAOD.GenParticle_mass,
+    ],
+    output=[q.truth_ps_2_d_1_p4],
+    scopes=["mm", "ee", "em"],
+)
+Truth_PS_2_D_2_P4 = Producer(
+    name="Truth_PS_2_D_2_P4",
+    call="lorentzvectors::build({df}, {input_vec}, 1, {output})",
+    input=[
+        q.truth_ps_2,
+        nanoAOD.GenParticle_pt,
+        nanoAOD.GenParticle_eta,
+        nanoAOD.GenParticle_phi,
+        nanoAOD.GenParticle_mass,
+    ],
+    output=[q.truth_ps_2_d_2_p4],
+    scopes=["mm", "ee", "em"],
+)
+truth_ps_2_mass = Producer(
+    name="truth_ps_2_mass",
+    call="quantities::m_vis({df}, {output}, {input_vec})",
+    input=[q.truth_ps_2_d_1_p4, q.truth_ps_2_d_2_p4],
+    output=[q.truth_ps_2_mass],
+    scopes=["mm", "ee", "em"],
+)
+truth_ps_2_deltaR = Producer(
+    name="truth_ps_2_deltaR",
+    call="haa::getDaughterDeltaR({df}, {input_vec}, {output})",
+    input=[q.truth_ps_2_d_1_p4, q.truth_ps_2_d_2_p4],
+    output=[q.truth_ps_2_deltaR],
+    scopes=["mm", "ee", "em"],
+)
+TruthPSQuantities = ProducerGroup(
+    name="TruthPSQuantities",
+    call=None,
+    input=None,
+    output=None,
+    scopes=["mm", "ee", "em"],
+    subproducers=[
+        Truth_PS_1_D_1_P4,
+        Truth_PS_1_D_2_P4,
+        truth_ps_1_mass,
+        truth_ps_1_deltaR,
+        Truth_PS_2_D_1_P4,
+        Truth_PS_2_D_2_P4,
+        truth_ps_2_mass,
+        truth_ps_2_deltaR,
+    ],
+)
+'''
 ps_mass_12 = Producer(
     name="ps_mass_12",
     call="quantities::m_vis({df}, {output}, {input_vec})",
@@ -189,3 +319,4 @@ ps_quanities = ProducerGroup(
     scopes=["mm", "ee", "em"],
     subproducers=[ps_mass_12, ps_mass_14, ps_mass_23, ps_mass_34],
 )
+'''

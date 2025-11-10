@@ -25,7 +25,7 @@ namespace haa {
 ROOT::RDF::RNode GetTrueDaughterP4s(ROOT::RDF::RNode df, const std::string &str_ngenpart, const std::string &str_genpart_pdgid, 
 				    const std::string &str_genpart_genpartidxmother, const std::string &str_genpart_pt,
 				    const std::string &str_genpart_eta, const std::string &str_genpart_phi,  
-				    const std::string &str_genpart_mass, const std::string &str_truth_d1_p4,
+				    const std::string &str_genpart_mass, const std::string &str_truedaughteridxs, const std::string &str_truth_d1_p4,
 				    const std::string &str_truth_d2_p4, const std::string &str_truth_d3_p4, const std::string &str_truth_d4_p4, const std::string &str_truth_h_p4) {
   auto truth_didx = [](const unsigned int ngenpart, const ROOT::RVec<int> genpart_pdgid, const ROOT::RVec<int> genpart_genpartidxmother, const ROOT::RVec<float> genpart_pt) {
     
@@ -93,15 +93,48 @@ ROOT::RDF::RNode GetTrueDaughterP4s(ROOT::RDF::RNode df, const std::string &str_
     return ROOT::Math::PtEtaPhiMVector(genpart_pt[thidx], genpart_eta[thidx], genpart_phi[thidx], genpart_mass[thidx]);
   };
 
-  auto df1 = df.Define("truedaughteridxs", truth_didx, {str_ngenpart, str_genpart_pdgid, str_genpart_genpartidxmother, str_genpart_pt});
-  auto df2 = df1.Define(str_truth_d1_p4, truth_d1_p4, {"truedaughteridxs", str_genpart_pt, str_genpart_eta, str_genpart_phi, str_genpart_mass});
-  auto df3 = df2.Define(str_truth_d2_p4, truth_d2_p4, {"truedaughteridxs", str_genpart_pt, str_genpart_eta, str_genpart_phi, str_genpart_mass});
-  auto df4 = df3.Define(str_truth_d3_p4, truth_d3_p4, {"truedaughteridxs", str_genpart_pt, str_genpart_eta, str_genpart_phi, str_genpart_mass});
-  auto df5 = df4.Define(str_truth_d4_p4, truth_d4_p4, {"truedaughteridxs", str_genpart_pt, str_genpart_eta, str_genpart_phi, str_genpart_mass});
+  auto df1 = df.Define(str_truedaughteridxs, truth_didx, {str_ngenpart, str_genpart_pdgid, str_genpart_genpartidxmother, str_genpart_pt});
+  auto df2 = df1.Define(str_truth_d1_p4, truth_d1_p4, {str_truedaughteridxs, str_genpart_pt, str_genpart_eta, str_genpart_phi, str_genpart_mass});
+  auto df3 = df2.Define(str_truth_d2_p4, truth_d2_p4, {str_truedaughteridxs, str_genpart_pt, str_genpart_eta, str_genpart_phi, str_genpart_mass});
+  auto df4 = df3.Define(str_truth_d3_p4, truth_d3_p4, {str_truedaughteridxs, str_genpart_pt, str_genpart_eta, str_genpart_phi, str_genpart_mass});
+  auto df5 = df4.Define(str_truth_d4_p4, truth_d4_p4, {str_truedaughteridxs, str_genpart_pt, str_genpart_eta, str_genpart_phi, str_genpart_mass});
   auto df6 = df5.Define(str_truth_h_p4, truth_h_p4, {str_ngenpart, str_genpart_pdgid, str_genpart_genpartidxmother, str_genpart_pt, str_genpart_eta, str_genpart_phi, str_genpart_mass});
   
   return df6;
   
+}
+
+ROOT::RDF::RNode GetTruthDaughterPairs(ROOT::RDF::RNode df, const std::string &str_truth_daughters, const std::string &str_genpart_pdgid, const std::string &str_genpart_motheridx, 
+               const std::string &str_truth_ps1, const std::string &str_truth_ps2) {
+  auto truth_ps1 = [](const ROOT::RVec<int> truth_daughters, const ROOT::RVec<int> genpart_pdgid, const ROOT::RVec<int> genpart_motheridx) {
+    ROOT::RVec<int> ps1 = {-1, -1};
+    for (int i = 0; i < truth_daughters.size(); i++) {
+      for (int j = i+1; j < truth_daughters.size(); j++) {
+        if (genpart_motheridx[truth_daughters[i]] == genpart_motheridx[truth_daughters[j]] && genpart_pdgid[truth_daughters[i]] != genpart_pdgid[truth_daughters[j]]) {
+          ps1 = {truth_daughters[i], truth_daughters[j]};
+          return ps1;
+        }
+      }
+    }
+    return ps1;
+  };
+  auto truth_ps2 = [](const ROOT::RVec<int> truth_daughters, const ROOT::RVec<int> truth_ps1) {
+    ROOT::RVec<int> ps2 = {-1, -1};
+    for (int i = 0; i < truth_daughters.size(); i++) {
+      if (truth_daughters[i] != truth_ps1[0] && truth_daughters[i] != truth_ps1[1]) {
+        if (ps2[0] == -1) {
+          ps2[0] = truth_daughters[i];
+        } else {
+          ps2[1] = truth_daughters[i];
+        }
+      }
+    }
+    return ps2;
+  };
+  auto df1 = df.Define(str_truth_ps1, truth_ps1, {str_truth_daughters, str_genpart_pdgid, str_genpart_motheridx});
+  auto df2 = df1.Define(str_truth_ps2, truth_ps2, {str_truth_daughters, str_truth_ps1});
+
+  return df2;
 }
 
 ROOT::RDF::RNode ClosestToHiggsMassAlgo(ROOT::RDF::RNode df, const std::string &str_pfcand_pt, const std::string &str_pfcand_eta, const std::string &str_pfcand_phi, 
@@ -496,6 +529,13 @@ ROOT::RDF::RNode getGenPt(ROOT::RDF::RNode df, const std::string &str_genpart_ma
 		       },
 		       {str_genpart_mask, str_genpart_pt}
 		       );
+  return df1;
+}
+
+ROOT::RDF::RNode getDaughterDeltaR(ROOT::RDF::RNode df, const std::vector<std::string> &inputvectors, const std::string &str_daughterDeltaR) {
+  auto df1 = df.Define(str_daughterDeltaR, [](const ROOT::Math::PtEtaPhiMVector &d1_p4, const ROOT::Math::PtEtaPhiMVector &d2_p4) {
+      return ROOT::Math::VectorUtil::DeltaR(d1_p4, d2_p4);
+    }, inputvectors);
   return df1;
 }
 

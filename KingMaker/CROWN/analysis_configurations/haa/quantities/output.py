@@ -122,6 +122,9 @@ ps_2_d_2_p4 = Quantity("ps_2_d_2_p4")
 ps_1_mass = Quantity("ps_1_mass")
 ps_2_mass = Quantity("ps_2_mass")
 
+ps_1_deltaR = Quantity("ps_1_deltaR")
+ps_2_deltaR = Quantity("ps_2_deltaR")
+
 pfcands_iso = Quantity("pfcands_iso")
 pfcands_pdgid = Quantity("pfcands_pdgid")
 pfcands_pt = Quantity("pfcands_pt")
@@ -160,10 +163,15 @@ d4_mass = Quantity("d4_mass")
 d4_prompt = Quantity("d4_prompt")
 d4_iso = Quantity("d4_iso")
 
+truth_daughters = Quantity("truth_daughters")
+truth_ps_1 = Quantity("truth_ps_1")
+truth_ps_2 = Quantity("truth_ps_2")
+
 truth_d1_p4 = Quantity("truth_d1_p4")
 truth_d1_pt = Quantity("truth_d1_pt")
 truth_d1_eta = Quantity("truth_d1_eta")
 truth_d1_phi = Quantity("truth_d1_phi")
+truth_d1_mass = Quantity("truth_d1_mass")
 
 truth_d2_p4 = Quantity("truth_d2_p4")
 truth_d2_pt = Quantity("truth_d2_pt")
@@ -179,6 +187,16 @@ truth_d4_p4 = Quantity("truth_d4_p4")
 truth_d4_pt = Quantity("truth_d4_pt")
 truth_d4_eta = Quantity("truth_d4_eta")
 truth_d4_phi = Quantity("truth_d4_phi")
+
+truth_ps_1_d_1_p4 = Quantity("truth_ps_1_d_1_p4")
+truth_ps_1_d_2_p4 = Quantity("truth_ps_1_d_2_p4")
+truth_ps_1_mass = Quantity("truth_ps_1_mass")
+truth_ps_1_deltaR = Quantity("truth_ps_1_deltaR")
+
+truth_ps_2_d_1_p4 = Quantity("truth_ps_2_d_1_p4")
+truth_ps_2_d_2_p4 = Quantity("truth_ps_2_d_2_p4")
+truth_ps_2_mass = Quantity("truth_ps_2_mass")
+truth_ps_2_deltaR = Quantity("truth_ps_2_deltaR")
 
 truth_H_p4 = Quantity("truth_H_p4")
 truth_H_pt = Quantity("truth_H_pt")
