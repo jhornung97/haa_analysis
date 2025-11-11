@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import utility
 from array import array
 
-def prep_data(scope, year, iso_mask):
+def prep_data(scope, year):
     lumi = 0
     if year == "2018":
         lumi = 59.83e3
@@ -21,45 +21,55 @@ def prep_data(scope, year, iso_mask):
         df = ROOT.RDataFrame("ntuple", "/ceph/jhornung/MC_2018/2018/HaaKKKK_M125_13TeV_powheg_pythia8-RunIISummer20UL18MiniAODv2-106X/mm/HaaKKKK_M125_13TeV_powheg_pythia8-RunIISummer20UL18MiniAODv2-106X.root")
         df = df.Define(f"H_mass_{year}_{scope}", "H_mass")
         df = df.Define("signs", "genWeight > 0 ? 1 : -1")
-        df = df.Define("nominal", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_pu_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight_up')#*evtweight
-        df = df.Define("weight_pu_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight_down')#*evtweight
-        df = df.Define("weight_id_1_up", f'{lumi}*signs*evtweight*id_wgt_mu_1__MuonIDUp*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_id_1_down", f'{lumi}*signs*evtweight*id_wgt_mu_1__MuonIDDown*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_id_2_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2__MuonIDUp*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_id_2_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2__MuonIDDown*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_iso_1_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1__MuonIsoUp*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_iso_1_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1__MuonIsoDown*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_iso_2_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2__MuonIsoUp*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_iso_2_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2__MuonIsoDown*trigger_wgt_mu_1*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_trigger_1_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1__MuonTriggerUp*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_trigger_1_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1__MuonTriggerDown*trigger_wgt_mu_2*puweight')#*evtweight
-        df = df.Define("weight_trigger_2_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2__MuonTriggerUp*puweight')#*evtweight
-        df = df.Define("weight_trigger_2_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_wgt_mu_1*trigger_wgt_mu_2__MuonTriggerDown*puweight')#*evtweight
+        df = df.Define("trigger_sfs", "1-(1 - trigger_wgt_mu_1)*(1 - trigger_wgt_mu_2)")
+        df = df.Define("trigger_sfs_up_1", "1-(1 - trigger_wgt_mu_1__MuonTriggerUp)*(1 - trigger_wgt_mu_2)")
+        df = df.Define("trigger_sfs_down_1", "1-(1 - trigger_wgt_mu_1__MuonTriggerDown)*(1 - trigger_wgt_mu_2)")
+        df = df.Define("trigger_sfs_up_2", "1-(1 - trigger_wgt_mu_1)*(1 - trigger_wgt_mu_2__MuonTriggerUp)")
+        df = df.Define("trigger_sfs_down_2", "1-(1 - trigger_wgt_mu_1)*(1 - trigger_wgt_mu_2__MuonTriggerDown)")
+        df = df.Define("nominal", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs*puweight')#*evtweight
+        df = df.Define("weight_pu_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs*puweight_up')#*evtweight
+        df = df.Define("weight_pu_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs*puweight_down')#*evtweight
+        df = df.Define("weight_id_1_up", f'{lumi}*signs*evtweight*id_wgt_mu_1__MuonIDUp*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs*puweight')#*evtweight
+        df = df.Define("weight_id_1_down", f'{lumi}*signs*evtweight*id_wgt_mu_1__MuonIDDown*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs*puweight')#*evtweight
+        df = df.Define("weight_id_2_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2__MuonIDUp*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs*puweight')#*evtweight
+        df = df.Define("weight_id_2_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2__MuonIDDown*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs*puweight')#*evtweight
+        df = df.Define("weight_iso_1_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1__MuonIsoUp*iso_wgt_mu_2*trigger_sfs*puweight')#*evtweight
+        df = df.Define("weight_iso_1_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1__MuonIsoDown*iso_wgt_mu_2*trigger_sfs*puweight')#*evtweight
+        df = df.Define("weight_iso_2_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2__MuonIsoUp*trigger_sfs*puweight')#*evtweight
+        df = df.Define("weight_iso_2_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2__MuonIsoDown*trigger_sfs*puweight')#*evtweight
+        df = df.Define("weight_trigger_1_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs_up_1*puweight')#*evtweight
+        df = df.Define("weight_trigger_1_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs_down_1*puweight')#*evtweight
+        df = df.Define("weight_trigger_2_up", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs_up_2*puweight')#*evtweight
+        df = df.Define("weight_trigger_2_down", f'{lumi}*signs*evtweight*id_wgt_mu_1*id_wgt_mu_2*iso_wgt_mu_1*iso_wgt_mu_2*trigger_sfs_down_2*puweight')#*evtweight
         df = df.Define("ps_mass_mask", "ps_1_mass < 3 && ps_2_mass < 3 && abs(ps_1_mass-ps_2_mass) < 0.06")
-        df = df.Define("iso_mask", f"d1_iso < {iso_mask} && d2_iso < {iso_mask}") # && d3_iso < {iso_mask} && d4_iso < {iso_mask}")
-        df = df.Define("mask", "pt_vis > 30 && (m_vis > 75 && m_vis < 105) && abs(H_eta) < 2.4 && d1_pt > 10 && d2_pt > 10 && ps_mass_mask") #&& iso_mask")
+        df = df.Define("iso_mask", f"d1_iso < 0.5 && d2_iso < 0.5") # && d3_iso < {iso_mask} && d4_iso < {iso_mask}")
+        df = df.Define("mask", "pt_vis > 30 && (m_vis > 75 && m_vis < 105) && abs(H_eta) < 2.4 && d1_pt > 10 && d2_pt > 10 && ps_mass_mask && iso_mask")
         snap = df.Snapshot("ntuple", f"/work/jhornung/Haa/limits/{year}/{scope}/signal_mm.root")
     elif scope == "ee":
         df = ROOT.RDataFrame("ntuple", "/ceph/jhornung/MC_2018/2018/HaaKKKK_M125_13TeV_powheg_pythia8-RunIISummer20UL18MiniAODv2-106X/ee/HaaKKKK_M125_13TeV_powheg_pythia8-RunIISummer20UL18MiniAODv2-106X.root")
         df = df.Define(f"H_mass_{year}_{scope}", "H_mass")
         df = df.Define("signs", "genWeight > 0 ? 1 : -1")
-        df = df.Define("sfs", 'id_wgt_ele_1*id_wgt_ele_2*trigger_wgt_ele_1*trigger_wgt_ele_2')
+        df = df.Define("trigger_sfs", "1-(1 - trigger_wgt_ele_1)*(1 - trigger_wgt_ele_2)")
+        df = df.Define("trigger_sfs_up_1", "1-(1 - trigger_wgt_ele_1_up)*(1 - trigger_wgt_ele_2)")
+        df = df.Define("trigger_sfs_down_1", "1-(1 - trigger_wgt_ele_1_down)*(1 - trigger_wgt_ele_2)")
+        df = df.Define("trigger_sfs_up_2", "1-(1 - trigger_wgt_ele_1)*(1 - trigger_wgt_ele_2_up)")
+        df = df.Define("trigger_sfs_down_2", "1-(1 - trigger_wgt_ele_1)*(1 - trigger_wgt_ele_2_down)")
+        df = df.Define("sfs", 'id_wgt_ele_1*id_wgt_ele_2*trigger_sfs')
         df = df.Define("nominal", f'{lumi}*signs*evtweight*sfs*puweight')
         df = df.Define("weight_pu_up", f'{lumi}*signs*evtweight*sfs*puweight_up')
         df = df.Define("weight_pu_down", f'{lumi}*signs*evtweight*sfs*puweight_down')
-        df = df.Define("weight_id_1_up", f'{lumi}*signs*evtweight*id_wgt_ele_1__ElectronIDUp*id_wgt_ele_2*trigger_wgt_ele_1*trigger_wgt_ele_2*puweight')
-        df = df.Define("weight_id_1_down", f'{lumi}*signs*evtweight*id_wgt_ele_1__ElectronIDDown*id_wgt_ele_2*trigger_wgt_ele_1*trigger_wgt_ele_2*puweight')
-        df = df.Define("weight_id_2_up", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2__ElectronIDUp*trigger_wgt_ele_1*trigger_wgt_ele_2*puweight')
-        df = df.Define("weight_id_2_down", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2__ElectronIDDown*trigger_wgt_ele_1*trigger_wgt_ele_2*puweight')
-        df = df.Define("weight_iso_1_up", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_wgt_ele_1*trigger_wgt_ele_2*puweight')
-        df = df.Define("weight_iso_1_down", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_wgt_ele_1*trigger_wgt_ele_2*puweight')
-        df = df.Define("weight_trigger_1_up", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_wgt_ele_1_up*trigger_wgt_ele_2*puweight')
-        df = df.Define("weight_trigger_1_down", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_wgt_ele_1_down*trigger_wgt_ele_2*puweight')
-        df = df.Define("weight_trigger_2_up", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_wgt_ele_1*trigger_wgt_ele_2_up*puweight')
-        df = df.Define("weight_trigger_2_down", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_wgt_ele_1*trigger_wgt_ele_2_down*puweight')
+        df = df.Define("weight_id_1_up", f'{lumi}*signs*evtweight*id_wgt_ele_1__ElectronIDUp*id_wgt_ele_2*trigger_sfs*puweight')
+        df = df.Define("weight_id_1_down", f'{lumi}*signs*evtweight*id_wgt_ele_1__ElectronIDDown*id_wgt_ele_2*trigger_sfs*puweight')
+        df = df.Define("weight_id_2_up", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2__ElectronIDUp*trigger_sfs*puweight')
+        df = df.Define("weight_id_2_down", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2__ElectronIDDown*trigger_sfs*puweight')
+        df = df.Define("weight_iso_1_up", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_sfs*puweight')
+        df = df.Define("weight_iso_1_down", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_sfs*puweight')
+        df = df.Define("weight_trigger_1_up", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_sfs_up_1*puweight')
+        df = df.Define("weight_trigger_1_down", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_sfs_down_1*puweight')
+        df = df.Define("weight_trigger_2_up", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_sfs_up_2*puweight')
+        df = df.Define("weight_trigger_2_down", f'{lumi}*signs*evtweight*id_wgt_ele_1*id_wgt_ele_2*trigger_sfs_down_2*puweight')
         df = df.Define("ps_mass_mask", "ps_1_mass < 3 && ps_2_mass < 3 && abs(ps_1_mass-ps_2_mass) < 1")
-        df = df.Define("iso_mask", f"d1_iso < {iso_mask} && d2_iso < {iso_mask}") # && d3_iso < {iso_mask} && d4_iso < {iso_mask}")
+        df = df.Define("iso_mask", f"d1_iso < 0.5 && d2_iso < 0.5") # && d3_iso < {iso_mask} && d4_iso < {iso_mask}")
         df = df.Define("mask", "pt_vis > 30 && (m_vis > 75 && m_vis < 105) && abs(H_eta) < 2.4 && d1_pt > 10 && d2_pt > 10 && ps_mass_mask && iso_mask")
         snap = df.Snapshot("ntuple", f"/work/jhornung/Haa/limits/{year}/{scope}/signal_ee.root")
 
@@ -130,9 +140,9 @@ def prep_data(scope, year, iso_mask):
 
 scope = sys.argv[1]
 year = sys.argv[2]
-iso_mask = float(sys.argv[3])
 
-mc, yields, yield_vars, systs, mass = prep_data(scope, year, iso_mask) 
+
+mc, yields, yield_vars, systs, mass = prep_data(scope, year) 
 
 
 MH = ROOT.RooRealVar(f"{scope}_MH", "MH", 125.0, 120.0, 130.0)
@@ -252,6 +262,24 @@ legend = ROOT.TLegend(0.625, 0.35, 0.875, 0.6)
 xframe = mass.frame()
 
 mc["nominal"].plotOn(xframe)
+
+gauss.plotOn(
+    xframe, 
+    RooFit.LineColor(ROOT.kBlue), 
+    RooFit.LineStyle(ROOT.kDashed),
+    RooFit.Normalization(eff_nom.getVal() * frac.getVal(), ROOT.RooAbsReal.NumEvent)
+    )
+gauss_fit = xframe.getObject(int(xframe.numItems()-1))
+legend.AddEntry(gauss_fit, "Gaussian Comp.", "l")
+
+cb.plotOn(
+    xframe, 
+    RooFit.LineColor(ROOT.kGreen+2), 
+    RooFit.LineStyle(ROOT.kDashDotted),
+    RooFit.Normalization(eff_nom.getVal() * (1 - frac.getVal()), ROOT.RooAbsReal.NumEvent)
+    )
+cb_fit = xframe.getObject(int(xframe.numItems()-1))
+legend.AddEntry(cb_fit, "Crystal Ball Comp.", "l")
 
 model_nom.plotOn(xframe, RooFit.LineColor(ROOT.kRed), RooFit.LineStyle(ROOT.kSolid))
 sig_fit = xframe.getObject(int(xframe.numItems()-1))

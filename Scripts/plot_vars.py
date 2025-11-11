@@ -68,14 +68,14 @@ bkg_labels = [
         r'Single Top'
         #r'QCD'
         ]
-mc_bkg = hl.data(mc_loc, bkgs, bkg_labels, scope)
+mc_bkg = hl.data(mc_loc, bkgs, bkg_labels, scope, data_type="mc")
 bkg_branches = mc_bkg.branches_dict
 z_pt_weights = mc_bkg.get_Z_pt_weights()
 #mc_min_combs = mc_bkg.get_min_ps_mass_diff()
 
 signal = ["HaaKKKK_M125_13TeV_powheg_pythia8-RunIISummer20UL18MiniAODv2-106X"]
-signal_labels = [r'$Z(\ell\ell)H(aa\rightarrow 4K)/10$']
-mc_signal = hl.data(signal_loc, signal, signal_labels, scope)
+signal_labels = [r'$Z(\ell\ell)H(aa\rightarrow 4K)$']
+mc_signal = hl.data(signal_loc, signal, signal_labels, scope, data_type="mc")
 signal_branches = mc_signal.branches_dict
 #signal_min_combs = mc_signal.get_min_ps_mass_diff()
 
@@ -87,14 +87,14 @@ elif scope == "ee" and ((year == "2017") or (year == "2016preVFP") or (year == "
     datasamples = ["single_electron_data"]
 
 data_labels = [r"Data"]
-data = hl.data(data_loc, datasamples, data_labels, scope)
+data = hl.data(data_loc, datasamples, data_labels, scope, data_type="data")
 data_branches = data.branches_dict
 #data_min_combs = data.get_min_ps_mass_diff()
 
-vars = ["H_mass", "H_eta", "m_vis", "pt_vis", "d1_pt", "d2_pt", "d1_iso", "d2_iso", "d3_iso", "d4_iso", "ps_1_mass", "ps_2_mass"]
-lbs = [60, -3, 70, 20, 5, 5, 0, 0, 0, 0, 0, 0]
-ubs = [220, 3, 110, 300, 100, 100, 1000, 1000, 1000, 1000, 5, 5]
-nbs = [80, 60, 40, 56, 38, 38, 1000, 1000, 1000, 1000, 50, 50]
+vars = ["H_mass", "H_eta", "m_vis", "pt_vis", "d1_pt", "d2_pt", "d1_iso", "d2_iso", "ps_1_mass", "ps_2_mass"]
+lbs = [60, -3, 70, 20, 5, 5, 0, 0, 0, 0]
+ubs = [220, 3, 110, 300, 100, 100, 8, 8, 5, 5]
+nbs = [80, 60, 40, 56, 38, 38, 16, 16, 50, 50]
 
 #var = ['PV_npvsGood']
 #lbs = [0]
@@ -118,7 +118,7 @@ for var, lb, ub, nb in zip(vars, lbs, ubs, nbs):
                 "bins": nb
             }
         hist = hl.hist(config)
-        hist.plot_data_to_mc(save_as=f"/web/jhornung/public_html/analysis_plots/{config['era']}/{var}_{scope}_AN_{config['selection']}_{nb}_bins_tight_Delta_mKK_cut")
+        hist.plot_data_to_mc()#save_as=f"/web/jhornung/public_html/analysis_plots/{config['era']}/{var}_{scope}_AN_{config['selection']}_{nb}_bins_tight_Delta_mKK_cut")
 '''
 
 config = {

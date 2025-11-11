@@ -24,11 +24,12 @@ class HandlerPatchWithMargin(HandlerPatch):
         return patch
 
 class data:
-    def __init__(self, loc, datasets, labels, scope):
+    def __init__(self, loc, datasets, labels, scope, data_type="mc"):
         self.loc = loc
         self.datasets = datasets
         self.labels = labels
         self.scope = scope
+        self.data_type = data_type
         self.branches_dict = self.read_in()
         
     def read_in(self):
@@ -37,11 +38,101 @@ class data:
         for dataset, label in zip(self.datasets, self.labels):
             file_path = f'{self.loc}/{dataset}/{self.scope}/{dataset}.root'
             print(f"Reading in {file_path}")
-            file = uproot.open(f'{self.loc}/{dataset}/{self.scope}/{dataset}.root')
-            branches = file['ntuple'].arrays()
-            branches_dict[label] = branches
-            print('Done')
-        
+            if self.data_type == "data":
+                file = uproot.open(f'{self.loc}/{dataset}/{self.scope}/{dataset}.root')
+                tree = file['ntuple']
+                branches = tree.arrays([
+                    "H_mass",
+                    "pt_vis",
+                    "m_vis",
+                    "H_eta",
+                    "d1_pt",
+                    "d2_pt",
+                    "ps_1_mass",
+                    "ps_2_mass",
+                    "d1_iso",
+                    "d2_iso"
+                ])
+                branches_dict[label] = branches
+                print('Done')
+            elif (self.data_type == "mc") and (self.scope == "mm"):
+                file = uproot.open(f'{self.loc}/{dataset}/{self.scope}/{dataset}.root')
+                tree = file['ntuple']
+                branches = tree.arrays([
+                    "H_mass",
+                    "pt_vis",
+                    "m_vis",
+                    "H_eta",
+                    "d1_pt",
+                    "d2_pt",
+                    "ps_1_mass",
+                    "ps_2_mass",
+                    "d1_iso",
+                    "d2_iso",
+                    "id_wgt_mu_1",
+                    "id_wgt_mu_2",
+                    "iso_wgt_mu_1",
+                    "iso_wgt_mu_2",
+                    "trigger_wgt_mu_1",
+                    "trigger_wgt_mu_2",
+                    "evtweight",
+                    "puweight",
+                    "genWeight",
+                    "gen_pt_vis"
+                ])
+                branches_dict[label] = branches
+                print('Done')
+            elif (self.data_type == "mc") and (self.scope == "ee"):
+                file = uproot.open(f'{self.loc}/{dataset}/{self.scope}/{dataset}.root')
+                tree = file['ntuple']
+                branches = tree.arrays([
+                    "H_mass",
+                    "pt_vis",
+                    "m_vis",
+                    "H_eta",
+                    "d1_pt",
+                    "d2_pt",
+                    "ps_1_mass",
+                    "ps_2_mass",
+                    "d1_iso",
+                    "d2_iso",
+                    "id_wgt_ele_1",
+                    "id_wgt_ele_2",
+                    "trigger_wgt_ele_1",
+                    "trigger_wgt_ele_2",
+                    "evtweight",
+                    "puweight",
+                    "genWeight",
+                    "gen_pt_vis"
+                ])
+                branches_dict[label] = branches
+                print('Done')
+            elif (self.data_type == "mc") and (self.scope == "em"):
+                 file = uproot.open(f'{self.loc}/{dataset}/{self.scope}/{dataset}.root')
+                 tree = file['ntuple']
+                 branches = tree.arrays([
+                     "H_mass",
+                     "pt_vis",
+                     "m_vis",
+                     "H_eta",
+                     "d1_pt",
+                     "d2_pt",
+                     "ps_1_mass",
+                     "ps_2_mass",
+                     "d1_iso",
+                     "d2_iso",
+                     "id_wgt_ele_1",
+                     "id_wgt_mu_2",
+                     "iso_wgt_mu_2",
+                     "trigger_wgt_ele_1",
+                     "trigger_wgt_mu_2",
+                     "evtweight",
+                     "puweight",
+                     "genWeight",
+                     "gen_pt_vis"
+                 ])
+                 branches_dict[label] = branches
+                 print('Done')       
         return branches_dict
     
     def get_key(self, dict, possible_keys):
@@ -51,56 +142,14 @@ class data:
         raise KeyError(f"None of the possible keys {possible_keys} found in the dictionary")
     
     def get_Z_pt_weights(self):
-        '''
-        res = pickle.load(lz4.frame.open("/work/jhornung/Haa/scetlib_dyturboCorrZ.pkl.lz4"))
-        h = res["Z"]["scetlib_dyturbo_hist"][{"vars": "pdf0"}]
-
-        theory_edges = h.axes[2].edges
-
-        theory_zpt_hist = h.project("qT").values()
-        integral = np.sum(theory_zpt_hist)
-        theory_dens = theory_zpt_hist/integral
-
-        idy_reweighting = uproot.open("/ceph/jhornung/reweighting/reweighting.root")
-        idy_reweighting_ntuples = idy_reweighting['ntuple']
-        idy_reweighting_branches = idy_reweighting_ntuples.arrays()
-
-        idy_gen_pt_hist, idy_gen_pt_edges = np.histogram(idy_reweighting_branches["z_pt"].to_numpy(), 
-                                                         bins=theory_edges, 
-                                                         weights=np.array(list(map(util.weights,idy_reweighting_branches['genWeight']))),
-                                                         density=True
-        )
-
-        theory_weights = theory_dens/idy_gen_pt_hist
-
-        mean = np.mean(theory_weights)
-
-        normalized_theory_weights = theory_weights/mean
-        '''
-
         possible_keys = ["Drell-Yan", "MC"]
         key = self.get_key(self.branches_dict, possible_keys)
         
         idy_zpt = self.branches_dict[key]["gen_pt_vis"].to_numpy()
         idy_idx = np.arange(idy_zpt.shape[0])
         idy_zpt_weights = np.ones(idy_zpt.shape[0])
-        '''
-        for i in range(len(theory_edges)-1):
-            mask = (idy_zpt >= theory_edges[i]) & (idy_zpt < theory_edges[i+1])
-            tmp_idx = idy_idx[mask]
-            idy_zpt_weights[tmp_idx] = normalized_theory_weights[i]
-        
-        kfactorsfile = uproot.open("/work/jhornung/Haa/merged_kfactors_zjets.root")
-        kfactors_histo = kfactorsfile["kfactor_monojet_ewk"]
-        kfactors = kfactors_histo.values()
-        kfactors_edges = kfactors_histo.axes[0].edges()
 
-        for i in range(len(kfactors_edges)-1):
-            mask = (idy_zpt >= kfactors_edges[i]) & (idy_zpt < kfactors_edges[i+1])
-            tmp_idx = idy_idx[mask]
-            idy_zpt_weights[tmp_idx] = kfactors[i]*idy_zpt_weights[tmp_idx]
-        '''
-        eejfile = uproot.open("/work/jhornung/Haa/lindert_qcd_nnlo_sf.root")
+        eejfile = uproot.open("/work/jhornung/Haa/samples/lindert_qcd_nnlo_sf.root")
         eej_histo = eejfile["eej"]
         eej_weights = eej_histo.values()
         eej_weights_axes = eej_histo.axes
@@ -362,26 +411,19 @@ class hist:
             if self.scope == "mm":
                 trigger_wgt = 1-(1-value['trigger_wgt_mu_1'])*(1-value['trigger_wgt_mu_2'])
                 #sfs = trigger_wgt[mask]*(value['id_wgt_mu_1'][mask]*value['iso_wgt_mu_1'][mask]+value['id_wgt_mu_2'][mask]*value['iso_wgt_mu_2'][mask])
-                sfs = value['id_wgt_mu_1'][mask]*value['id_wgt_mu_2'][mask]*value['iso_wgt_mu_1'][mask]*value['iso_wgt_mu_2'][mask]*value['trigger_wgt_mu_1'][mask]*value['trigger_wgt_mu_2'][mask]
+                sfs = value['id_wgt_mu_1'][mask]*value['id_wgt_mu_2'][mask]*value['iso_wgt_mu_1'][mask]*value['iso_wgt_mu_2'][mask]*trigger_wgt[mask]
                 signs = np.array(list(map(util.weights, value['genWeight'][mask])))
                 mean = np.mean(value['puweight'][mask])
                 if key == "Drell-Yan":
                     weight = self.lumi*signs*value['evtweight'][mask]*sfs*self.idy_zpt_weights[mask]*value['puweight'][mask]
-                    weight_up = self.lumi*signs*value['evtweight'][mask]*sfs*self.idy_zpt_weights[mask]*value['puweight_up'][mask]
-                    weight_down = self.lumi*signs*value['evtweight'][mask]*sfs*self.idy_zpt_weights[mask]*value['puweight_down'][mask]
                     mc_weights[key] = weight
-                    mc_weights_up[key] = weight_up
-                    mc_weights_down[key] = weight_down
                 else:
                     weight = self.lumi*signs*sfs*value['evtweight'][mask]*value['puweight'][mask]
-                    weight_up = self.lumi*signs*sfs*value['evtweight'][mask]*value['puweight_up'][mask]
-                    weight_down = self.lumi*signs*sfs*value['evtweight'][mask]*value['puweight_down'][mask]
                     mc_weights[key] = weight
-                    mc_weights_up[key] = weight_up
-                    mc_weights_down[key] = weight_down
 
             if self.scope == "ee":
-                sfs = value['id_wgt_ele_1'][mask]*value['id_wgt_ele_2'][mask]*value['trigger_wgt_ele_1'][mask]*value['trigger_wgt_ele_2'][mask]
+                trigger_wgt = 1-(1-value['trigger_wgt_ele_1'])*(1-value['trigger_wgt_ele_2'])
+                sfs = value['id_wgt_ele_1'][mask]*value['id_wgt_ele_2'][mask]*trigger_wgt[mask]
                 signs = np.array(list(map(util.weights, value['genWeight'][mask])))
                 if key == "Drell-Yan":
                     weight = self.lumi*signs*value['evtweight'][mask]*self.idy_zpt_weights[mask]*sfs*value['puweight'][mask]
@@ -391,7 +433,8 @@ class hist:
                     mc_weights[key] = weight
             
             if self.scope == "em":
-                sfs = value['id_wgt_ele_1'][mask]*value['id_wgt_mu_2'][mask]*value['iso_wgt_mu_2'][mask]*value['trigger_wgt_ele_1'][mask]*value['trigger_wgt_mu_2'][mask]
+                trigger_wgt = 1-(1-value['trigger_wgt_ele_1'])*(1-value['trigger_wgt_mu_2'])
+                sfs = value['id_wgt_ele_1'][mask]*value['id_wgt_mu_2'][mask]*value['iso_wgt_mu_2'][mask]*trigger_wgt[mask]
                 signs = np.array(list(map(util.weights, value['genWeight'][mask])))
                 if key == "Drell-Yan":
                     weight = self.lumi*signs*value['evtweight'][mask]*self.idy_zpt_weights[mask]*sfs*value['puweight'][mask]
@@ -435,19 +478,22 @@ class hist:
                 signal_masks[key] = mask
 
             if self.scope == "mm":
-                sfs = value['id_wgt_mu_1'][mask]*value['id_wgt_mu_2'][mask]*value['iso_wgt_mu_1'][mask]*value['iso_wgt_mu_2'][mask]*value['trigger_wgt_mu_1'][mask]*value['trigger_wgt_mu_2'][mask]
+                trigger_wgt = 1-(1-value['trigger_wgt_mu_1'])*(1-value['trigger_wgt_mu_2'])
+                sfs = value['id_wgt_mu_1'][mask]*value['id_wgt_mu_2'][mask]*value['iso_wgt_mu_1'][mask]*value['iso_wgt_mu_2'][mask]*trigger_wgt[mask]
                 signs = np.array(list(map(util.weights, value['genWeight'][mask])))
                 pu_mean = np.mean(value['puweight'][mask])
                 pu_normalized = value['puweight'][mask]/pu_mean
-                weight = 0.1*self.lumi*value['evtweight'][mask]*signs*sfs*value['puweight'][mask]
+                weight = self.lumi*value['evtweight'][mask]*signs*sfs*value['puweight'][mask]
                 signal_weights[key] = weight
             if self.scope == "ee":
-                sfs = value['id_wgt_ele_1'][mask]*value['id_wgt_ele_2'][mask]*value['trigger_wgt_ele_1'][mask]*value['trigger_wgt_ele_2'][mask]
+                trigger_wgt = 1-(1-value['trigger_wgt_ele_1'])*(1-value['trigger_wgt_ele_2'])   
+                sfs = value['id_wgt_ele_1'][mask]*value['id_wgt_ele_2'][mask]*trigger_wgt[mask]
                 signs = np.array(list(map(util.weights, value['genWeight'][mask])))
                 weight = self.lumi*value['evtweight'][mask]*signs*sfs*value['puweight'][mask]
                 signal_weights[key] = weight
             if self.scope == "em":
-                sfs = value['id_wgt_ele_1'][mask]*value['id_wgt_mu_2'][mask]*value['iso_wgt_mu_2'][mask]*value['trigger_wgt_ele_1'][mask]*value['trigger_wgt_mu_2'][mask]
+                trigger_wgt = 1-(1-value['trigger_wgt_ele_1'])*(1-value['trigger_wgt_mu_2'])
+                sfs = value['id_wgt_ele_1'][mask]*value['id_wgt_mu_2'][mask]*value['iso_wgt_mu_2'][mask]*trigger_wgt[mask]
                 signs = np.array(list(map(util.weights, value['genWeight'][mask])))
                 weight = signs*sfs*value['puweight'][mask]
                 signal_weights[key] = weight
