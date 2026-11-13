@@ -12,3 +12,11 @@ Scripts/__pycache__/
 .env
 .nfs0000000000114ee600007b4f
 .Trash-12017/
+CMSSW*/
+err/
+log/
+stdout/
+*txt
+utils/*.root
+*.tar.gz
+iso_extrapolation/docker_stderror

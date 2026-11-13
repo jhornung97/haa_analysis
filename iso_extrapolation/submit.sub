@@ -1,0 +1,21 @@
+Universe = docker
+docker_image = mschnepf/slc7-condocker
+
+executable = do_extrapolate.sh
+arguments = $(scope) $(year)
+TransferExecutable = True
+transfer_input_files = utils.tar.gz
+#transfer_output_files = ""
+stream_output=True
++JobName = "extrapolation_$(year)_$(scope)"
+
+requirements = (TARGET.ProvidesCPU == True) && (TARGET.ProvidesETPResources == True)
+request_disk = 50000000
+request_memory = 10GB
+accounting_group = cms.higgs
+
+log = log/extrapolation/extrapolation_$(year)_$(scope).log
+output = stdout/extrapolation/extrapolation_$(year)_$(scope).out
+error = err/extrapolation/extrapolation_$(year)_$(scope).err
+
+queue scope, year from scenarios.txt
